@@ -1,0 +1,15 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Phase 1 connectivity check only. Replaced by the real models in Phase 2.
+model SmokeTest {
+  id        String   @id @default(cuid())
+  label     String
+  createdAt DateTime @default(now())
+}
