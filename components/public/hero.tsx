@@ -12,6 +12,14 @@ export function Hero({ profile }: { profile: Profile }) {
     >
       <Container>
         <div className="hero-entrance max-w-3xl">
+          {profile.avatarUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={profile.avatarUrl}
+              alt=""
+              className="mb-5 h-20 w-20 rounded-2xl border border-border object-cover"
+            />
+          ) : null}
           <p className="font-mono text-[0.7rem] tracking-[0.22em] text-accent uppercase">
             ● Live pipeline · {profile.location}
           </p>

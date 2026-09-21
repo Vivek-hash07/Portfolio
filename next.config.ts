@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     "pg",
     "better-auth",
     "bcryptjs",
+    "@aws-sdk/client-s3",
   ],
 };
 

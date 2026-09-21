@@ -1,0 +1,127 @@
+import { cache } from "react";
+import { prisma } from "@/lib/prisma";
+
+export const getAdminProfile = cache(async () => {
+  return prisma.profile.findFirst();
+});
+
+export const getAdminSkillGroups = cache(async () => {
+  return prisma.skillGroup.findMany({
+    orderBy: { order: "asc" },
+    include: { skills: { orderBy: { order: "asc" } } },
+  });
+});
+
+export const getAdminExperiences = cache(async () => {
+  return prisma.experience.findMany({ orderBy: { order: "asc" } });
+});
+
+export const getAdminExperience = cache(async (id: string) => {
+  return prisma.experience.findUnique({ where: { id } });
+});
+
+export const getAdminProjects = cache(async () => {
+  return prisma.project.findMany({ orderBy: { order: "asc" } });
+});
+
+export const getAdminProject = cache(async (id: string) => {
+  return prisma.project.findUnique({ where: { id } });
+});
+
+export const getAdminCertifications = cache(async () => {
+  return prisma.certification.findMany({ orderBy: { order: "asc" } });
+});
+
+export const getAdminEducation = cache(async () => {
+  return prisma.education.findMany({ orderBy: { order: "asc" } });
+});
+
+export const getAdminPosts = cache(async () => {
+  return prisma.post.findMany({
+    orderBy: [{ publishedAt: "desc" }, { updatedAt: "desc" }],
+  });
+});
+
+export const getAdminPost = cache(async (id: string) => {
+  return prisma.post.findUnique({ where: { id } });
+});
+
+function latestDate(dates: Array<Date | null | undefined>) {
+  return dates.reduce<Date | null>((latest, date) => {
+    if (!date) return latest;
+    if (!latest || date > latest) return date;
+    return latest;
+  }, null);
+}
+
+export const getAdminOverview = cache(async () => {
+  const [profile, skillGroups, skills, experiences, projects, certifications, education, posts] =
+    await Promise.all([
+      prisma.profile.findFirst({ select: { updatedAt: true } }),
+      prisma.skillGroup.findMany({ select: { updatedAt: true } }),
+      prisma.skill.findMany({ select: { updatedAt: true } }),
+      prisma.experience.findMany({ select: { updatedAt: true } }),
+      prisma.project.findMany({ select: { updatedAt: true } }),
+      prisma.certification.findMany({ select: { updatedAt: true } }),
+      prisma.education.findMany({ select: { updatedAt: true } }),
+      prisma.post.findMany({
+        select: { updatedAt: true, published: true },
+      }),
+    ]);
+
+  return [
+    {
+      href: "/admin/profile",
+      title: "Profile",
+      description: "Name, title, summary, contact, avatar, résumé",
+      count: profile ? 1 : 0,
+      updatedAt: profile?.updatedAt ?? null,
+    },
+    {
+      href: "/admin/skills",
+      title: "Skills",
+      description: "Groups and individual skills",
+      count: skills.length,
+      updatedAt: latestDate([
+        ...skillGroups.map((item) => item.updatedAt),
+        ...skills.map((item) => item.updatedAt),
+      ]),
+    },
+    {
+      href: "/admin/experience",
+      title: "Experience",
+      description: "Roles, dates, and bullets",
+      count: experiences.length,
+      updatedAt: latestDate(experiences.map((item) => item.updatedAt)),
+    },
+    {
+      href: "/admin/projects",
+      title: "Projects",
+      description: "Case studies, images, and tech stacks",
+      count: projects.length,
+      updatedAt: latestDate(projects.map((item) => item.updatedAt)),
+    },
+    {
+      href: "/admin/certifications",
+      title: "Certifications",
+      description: "Names, issuers, and links",
+      count: certifications.length,
+      updatedAt: latestDate(certifications.map((item) => item.updatedAt)),
+    },
+    {
+      href: "/admin/education",
+      title: "Education",
+      description: "Degrees and institutions",
+      count: education.length,
+      updatedAt: latestDate(education.map((item) => item.updatedAt)),
+    },
+    {
+      href: "/admin/blog",
+      title: "Blog",
+      description: "Drafts and published posts",
+      count: posts.length,
+      meta: `${posts.filter((post) => post.published).length} published`,
+      updatedAt: latestDate(posts.map((item) => item.updatedAt)),
+    },
+  ];
+});

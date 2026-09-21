@@ -153,9 +153,36 @@ body::before {
   color: var(--fg);
 }
 
-.btn-ghost:hover {
-  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
-  color: var(--accent);
+.btn-danger {
+  border: 1px solid color-mix(in srgb, #c2410c 45%, var(--border));
+  background: color-mix(in srgb, #c2410c 12%, var(--surface));
+  color: #9a3412;
+}
+
+html.dark .btn-danger {
+  border-color: color-mix(in srgb, #fb7185 40%, var(--border));
+  background: color-mix(in srgb, #fb7185 12%, var(--surface));
+  color: #fecdd3;
+}
+
+.btn-danger:hover {
+  border-color: #c2410c;
+}
+
+html.dark .btn-danger:hover {
+  border-color: #fb7185;
+}
+
+.w-md-editor {
+  --md-editor-background-color: var(--surface) !important;
+  --md-editor-box-shadow-color: transparent !important;
+  background: var(--surface) !important;
+  color: var(--fg) !important;
+}
+
+.w-md-editor-toolbar {
+  background: var(--surface-2) !important;
+  border-color: var(--border) !important;
 }
 
 .hero-entrance > * {

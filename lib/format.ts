@@ -22,3 +22,13 @@ export function formatDateRange(start: Date, end: Date | null) {
 export function formatLongDate(date: Date) {
   return longDateFormatter.format(date);
 }
+
+export function formatTimestamp(date: Date) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(date);
+}

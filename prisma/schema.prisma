@@ -24,18 +24,20 @@ model Profile {
 }
 
 model SkillGroup {
-  id     String  @id @default(cuid())
-  label  String
-  order  Int
-  skills Skill[]
+  id        String   @id @default(cuid())
+  label     String
+  order     Int
+  skills    Skill[]
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model Skill {
-  id      String     @id @default(cuid())
-  name    String
-  groupId String
-  group   SkillGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  order   Int
+  id        String     @id @default(cuid())
+  name      String
+  groupId   String
+  group     SkillGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  order     Int
+  updatedAt DateTime   @default(now()) @updatedAt
 }
 
 model Experience {
@@ -47,6 +49,7 @@ model Experience {
   endDate     DateTime?
   bullets     String[]
   order       Int
+  updatedAt   DateTime  @default(now()) @updatedAt
 }
 
 model Project {
@@ -60,14 +63,16 @@ model Project {
   imageUrl    String?
   featured    Boolean  @default(false)
   order       Int
+  updatedAt   DateTime @default(now()) @updatedAt
 }
 
 model Certification {
-  id     String  @id @default(cuid())
-  name   String
-  issuer String?
-  url    String?
-  order  Int
+  id        String   @id @default(cuid())
+  name      String
+  issuer    String?
+  url       String?
+  order     Int
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model Education {
@@ -78,6 +83,7 @@ model Education {
   startDate   DateTime
   endDate     DateTime?
   order       Int
+  updatedAt   DateTime  @default(now()) @updatedAt
 }
 
 model Post {
