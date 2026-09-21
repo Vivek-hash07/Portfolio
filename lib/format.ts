@@ -39,3 +39,12 @@ export function formatTimestamp(date: Date | string) {
     minute: "2-digit",
   }).format(toDate(date));
 }
+
+export function latestDate(dates: Array<Date | string | null | undefined>) {
+  return dates.reduce<Date | null>((latest, date) => {
+    if (!date) return latest;
+    const value = toDate(date);
+    if (!latest || value > latest) return value;
+    return latest;
+  }, null);
+}

@@ -1,5 +1,8 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
+import { getMetadataBase } from "@/lib/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,9 +21,26 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Vivek Sarvaiya",
+  metadataBase: getMetadataBase(),
+  title: {
+    default: "Vivek Sarvaiya",
+    template: "%s · Vivek Sarvaiya",
+  },
   description:
     "Full stack | AI Engineer | Software Developer | Backend Engineer portfolio",
+  applicationName: "Vivek Sarvaiya",
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    siteName: "Vivek Sarvaiya",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export const viewport: Viewport = {
@@ -44,6 +64,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="relative flex min-h-full flex-col font-sans">
         {children}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

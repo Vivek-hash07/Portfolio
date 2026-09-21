@@ -12,6 +12,7 @@ const LINKS = [
   { href: "/admin/certifications", label: "Certifications" },
   { href: "/admin/education", label: "Education" },
   { href: "/admin/blog", label: "Blog" },
+  { href: "/admin/messages", label: "Messages" },
 ] as const;
 
 function isActive(pathname: string, href: string, exact?: boolean) {
@@ -22,7 +23,7 @@ function isActive(pathname: string, href: string, exact?: boolean) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function AdminNav() {
+export function AdminNav({ unreadMessages = 0 }: { unreadMessages?: number }) {
   const pathname = usePathname();
 
   return (
@@ -32,12 +33,18 @@ export function AdminNav() {
     >
       <ul className="mx-auto flex w-full max-w-6xl gap-1 px-5 py-2 sm:px-6">
         {LINKS.map((link) => {
-          const active = isActive(pathname, link.href, "exact" in link && link.exact);
+          const active = isActive(
+            pathname,
+            link.href,
+            "exact" in link && link.exact,
+          );
+          const badge = link.href === "/admin/messages" ? unreadMessages : 0;
 
           return (
             <li key={link.href} className="shrink-0">
               <Link
                 href={link.href}
+                aria-current={active ? "page" : undefined}
                 className={`block rounded-full px-3 py-1.5 text-sm transition ${
                   active
                     ? "bg-accent text-accent-fg"
@@ -45,6 +52,12 @@ export function AdminNav() {
                 }`}
               >
                 {link.label}
+                {badge > 0 ? (
+                  <span className="ml-2 font-mono text-[0.7rem]">
+                    {badge}
+                    <span className="sr-only"> unread</span>
+                  </span>
+                ) : null}
               </Link>
             </li>
           );

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/public/theme-toggle";
-import { NAV_LINKS } from "@/components/public/ui";
+import { NAV_LINKS } from "@/components/public/nav-links";
 
 export function SiteNav({ name }: { name: string }) {
   const [open, setOpen] = useState(false);

@@ -14,7 +14,7 @@ function renderInline(value: string) {
     .replace(/(^|[^*])\*([^*]+)\*(?!\*)/g, "$1<em>$2</em>")
     .replace(
       /\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,
-      '<a href="$2" rel="noreferrer" target="_blank">$1</a>',
+      '<a href="$2" rel="noopener noreferrer" target="_blank">$1</a>',
     );
 }
 

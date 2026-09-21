@@ -20,7 +20,7 @@ function ProjectCard({
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={project.imageUrl}
-          alt=""
+          alt={`${project.title} screenshot`}
           className="mb-6 aspect-video w-full rounded-xl object-cover"
         />
       ) : null}
@@ -61,7 +61,7 @@ function ProjectCard({
               <a
                 href={project.liveUrl}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="text-accent underline-offset-4 hover:underline"
               >
                 Live site
@@ -71,7 +71,7 @@ function ProjectCard({
               <a
                 href={project.repoUrl}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="text-accent underline-offset-4 hover:underline"
               >
                 Repository
@@ -84,7 +84,13 @@ function ProjectCard({
   );
 }
 
-export function Projects({ projects }: { projects: Project[] }) {
+export function Projects({
+  projects,
+  updatedAt,
+}: {
+  projects: Project[];
+  updatedAt?: Date | null;
+}) {
   if (projects.length === 0) {
     return null;
   }
@@ -100,7 +106,12 @@ export function Projects({ projects }: { projects: Project[] }) {
     >
       <Container>
         <Reveal>
-          <SectionHeading index="04" eyebrow="Selected work" title="Projects" />
+          <SectionHeading
+            index="04"
+            eyebrow="Selected work"
+            title="Projects"
+            updatedAt={updatedAt}
+          />
           {featured.length > 0 ? (
             <div className="grid gap-6 md:grid-cols-2">
               {featured.map((project) => (

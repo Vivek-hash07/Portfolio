@@ -1,21 +1,15 @@
-export const NAV_LINKS = [
-  { href: "/#about", label: "About" },
-  { href: "/#skills", label: "Skills" },
-  { href: "/#experience", label: "Experience" },
-  { href: "/#projects", label: "Projects" },
-  { href: "/#education", label: "Education" },
-  { href: "/blog", label: "Blog" },
-  { href: "/#contact", label: "Contact" },
-] as const;
+import { formatLongDate } from "@/lib/format";
 
 export function SectionHeading({
   eyebrow,
   title,
   index,
+  updatedAt,
 }: {
   eyebrow: string;
   title: string;
   index: string;
+  updatedAt?: Date | null;
 }) {
   return (
     <div className="mb-10">
@@ -25,6 +19,11 @@ export function SectionHeading({
       <h2 className="font-display mt-2 text-3xl font-semibold tracking-tight text-fg sm:text-4xl">
         {title}
       </h2>
+      {updatedAt ? (
+        <p className="mt-2 font-mono text-xs text-muted">
+          Updated {formatLongDate(updatedAt)}
+        </p>
+      ) : null}
     </div>
   );
 }

@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
     "better-auth",
     "bcryptjs",
     "@aws-sdk/client-s3",
+    "pdf-lib",
+    "resend",
   ],
 };
 

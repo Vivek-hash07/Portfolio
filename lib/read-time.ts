@@ -1,0 +1,10 @@
+const WORDS_PER_MINUTE = 220;
+
+export function estimateReadTimeMinutes(content: string) {
+  const words = content.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(words / WORDS_PER_MINUTE));
+}
+
+export function formatReadTime(minutes: number) {
+  return `${minutes} min read`;
+}

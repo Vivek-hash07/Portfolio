@@ -6,9 +6,11 @@ import { formatDateRange } from "@/lib/format";
 export function EducationAndCertifications({
   education,
   certifications,
+  updatedAt,
 }: {
   education: Education[];
   certifications: Certification[];
+  updatedAt?: Date | null;
 }) {
   if (education.length === 0 && certifications.length === 0) {
     return null;
@@ -26,6 +28,7 @@ export function EducationAndCertifications({
             index="05"
             eyebrow="Background"
             title="Education & Certifications"
+            updatedAt={updatedAt}
           />
           <div className="grid gap-12 md:grid-cols-2">
             {education.length > 0 ? (
@@ -66,7 +69,7 @@ export function EducationAndCertifications({
                         <a
                           href={cert.url}
                           target="_blank"
-                          rel="noreferrer"
+                          rel="noopener noreferrer"
                           className="font-medium text-fg underline-offset-4 hover:text-accent hover:underline"
                         >
                           {cert.name}

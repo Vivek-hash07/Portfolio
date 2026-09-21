@@ -2,7 +2,13 @@ import type { SkillGroupWithSkills } from "@/lib/data";
 import { Reveal } from "@/components/public/reveal";
 import { Container, SectionHeading } from "@/components/public/ui";
 
-export function Skills({ groups }: { groups: SkillGroupWithSkills[] }) {
+export function Skills({
+  groups,
+  updatedAt,
+}: {
+  groups: SkillGroupWithSkills[];
+  updatedAt?: Date | null;
+}) {
   if (groups.length === 0) {
     return null;
   }
@@ -15,7 +21,12 @@ export function Skills({ groups }: { groups: SkillGroupWithSkills[] }) {
     >
       <Container>
         <Reveal>
-          <SectionHeading index="02" eyebrow="Capabilities" title="Skills" />
+          <SectionHeading
+            index="02"
+            eyebrow="Capabilities"
+            title="Skills"
+            updatedAt={updatedAt}
+          />
           <div className="grid gap-10 sm:grid-cols-2">
             {groups.map((group) => (
               <div key={group.id}>

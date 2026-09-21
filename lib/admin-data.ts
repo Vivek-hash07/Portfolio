@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { latestDate } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 
 export const getAdminProfile = cache(async () => {
@@ -46,16 +47,28 @@ export const getAdminPost = cache(async (id: string) => {
   return prisma.post.findUnique({ where: { id } });
 });
 
-function latestDate(dates: Array<Date | null | undefined>) {
-  return dates.reduce<Date | null>((latest, date) => {
-    if (!date) return latest;
-    if (!latest || date > latest) return date;
-    return latest;
-  }, null);
-}
+export const getAdminMessages = cache(async () => {
+  return prisma.message.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+});
+
+export const getAdminUnreadMessageCount = cache(async () => {
+  return prisma.message.count({ where: { readAt: null } });
+});
 
 export const getAdminOverview = cache(async () => {
-  const [profile, skillGroups, skills, experiences, projects, certifications, education, posts] =
+  const [
+    profile,
+    skillGroups,
+    skills,
+    experiences,
+    projects,
+    certifications,
+    education,
+    posts,
+    messages,
+  ] =
     await Promise.all([
       prisma.profile.findFirst({ select: { updatedAt: true } }),
       prisma.skillGroup.findMany({ select: { updatedAt: true } }),
@@ -66,6 +79,9 @@ export const getAdminOverview = cache(async () => {
       prisma.education.findMany({ select: { updatedAt: true } }),
       prisma.post.findMany({
         select: { updatedAt: true, published: true },
+      }),
+      prisma.message.findMany({
+        select: { createdAt: true, readAt: true },
       }),
     ]);
 
@@ -122,6 +138,14 @@ export const getAdminOverview = cache(async () => {
       count: posts.length,
       meta: `${posts.filter((post) => post.published).length} published`,
       updatedAt: latestDate(posts.map((item) => item.updatedAt)),
+    },
+    {
+      href: "/admin/messages",
+      title: "Messages",
+      description: "Contact form inbox",
+      count: messages.length,
+      meta: `${messages.filter((item) => !item.readAt).length} unread`,
+      updatedAt: latestDate(messages.map((item) => item.createdAt)),
     },
   ];
 });

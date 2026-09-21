@@ -5,8 +5,10 @@ import { formatDateRange } from "@/lib/format";
 
 export function ExperienceTimeline({
   experiences,
+  updatedAt,
 }: {
   experiences: Experience[];
+  updatedAt?: Date | null;
 }) {
   if (experiences.length === 0) {
     return null;
@@ -20,7 +22,12 @@ export function ExperienceTimeline({
     >
       <Container>
         <Reveal>
-          <SectionHeading index="03" eyebrow="Work" title="Experience" />
+          <SectionHeading
+            index="03"
+            eyebrow="Work"
+            title="Experience"
+            updatedAt={updatedAt}
+          />
           <ol className="space-y-12">
             {experiences.map((role) => (
               <li

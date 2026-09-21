@@ -2,6 +2,7 @@ import Link from "next/link";
 import { logoutAction } from "@/app/admin/actions";
 import { AdminNav } from "@/components/admin/admin-nav";
 import { ThemeToggle } from "@/components/public/theme-toggle";
+import { getAdminUnreadMessageCount } from "@/lib/admin-data";
 import { requireAdminSession } from "@/lib/admin-session";
 import type { Metadata } from "next";
 
@@ -18,6 +19,7 @@ export default async function AdminDashboardLayout({
   children: React.ReactNode;
 }) {
   const session = await requireAdminSession();
+  const unreadMessages = await getAdminUnreadMessageCount();
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-bg">
@@ -50,7 +52,7 @@ export default async function AdminDashboardLayout({
           </div>
         </div>
       </header>
-      <AdminNav />
+      <AdminNav unreadMessages={unreadMessages} />
       {children}
     </div>
   );

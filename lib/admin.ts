@@ -55,6 +55,9 @@ export function revalidatePublic(extraPaths: string[] = []) {
   revalidatePath("/");
   revalidatePath("/blog");
   revalidatePath("/blog/[slug]", "page");
+  revalidatePath("/rss.xml");
+  revalidatePath("/resume.pdf");
+  revalidatePath("/sitemap.xml");
 
   for (const path of extraPaths) {
     revalidatePath(path);

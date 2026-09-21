@@ -1,7 +1,13 @@
 import { Reveal } from "@/components/public/reveal";
 import { Container, SectionHeading } from "@/components/public/ui";
 
-export function Summary({ summary }: { summary: string }) {
+export function Summary({
+  summary,
+  updatedAt,
+}: {
+  summary: string;
+  updatedAt?: Date | null;
+}) {
   return (
     <section
       id="about"
@@ -10,7 +16,12 @@ export function Summary({ summary }: { summary: string }) {
     >
       <Container>
         <Reveal>
-          <SectionHeading index="01" eyebrow="About" title="Summary" />
+          <SectionHeading
+            index="01"
+            eyebrow="About"
+            title="Summary"
+            updatedAt={updatedAt}
+          />
           <p className="max-w-3xl text-base leading-8 text-fg/85 sm:text-lg">
             {summary}
           </p>

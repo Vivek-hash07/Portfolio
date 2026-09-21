@@ -8,6 +8,8 @@ import {
   getPublishedPostSlugs,
 } from "@/lib/data";
 import { formatLongDate } from "@/lib/format";
+import { estimateReadTimeMinutes, formatReadTime } from "@/lib/read-time";
+import { getSiteUrl } from "@/lib/site";
 
 export const revalidate = 60;
 
@@ -26,9 +28,27 @@ export async function generateMetadata({
     return { title: "Post not found" };
   }
 
+  const url = `${getSiteUrl()}/blog/${post.slug}`;
+
   return {
     title: post.title,
     description: post.excerpt ?? undefined,
+    openGraph: {
+      type: "article",
+      title: post.title,
+      description: post.excerpt ?? undefined,
+      url,
+      publishedTime: post.publishedAt?.toISOString(),
+      modifiedTime: post.updatedAt.toISOString(),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt ?? undefined,
+    },
+    alternates: {
+      canonical: `/blog/${post.slug}`,
+    },
   };
 }
 
@@ -42,6 +62,8 @@ export default async function BlogPostPage({
     notFound();
   }
 
+  const readTime = formatReadTime(estimateReadTimeMinutes(post.content));
+
   return (
     <main className="py-16">
       <Container>
@@ -51,11 +73,10 @@ export default async function BlogPostPage({
           </Link>
         </p>
         <article className="mt-8">
-          {post.publishedAt ? (
-            <p className="font-mono text-sm text-accent">
-              {formatLongDate(post.publishedAt)}
-            </p>
-          ) : null}
+          <p className="font-mono text-sm text-accent">
+            {post.publishedAt ? `${formatLongDate(post.publishedAt)} · ` : null}
+            {readTime}
+          </p>
           <h1 className="font-display mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-fg">
             {post.title}
           </h1>

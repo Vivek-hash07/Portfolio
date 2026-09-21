@@ -41,6 +41,7 @@ export function ThemeToggle() {
       type="button"
       className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface/80 text-fg"
       aria-label="Toggle color theme"
+      title="Toggle color theme"
       onClick={toggle}
     >
       <svg

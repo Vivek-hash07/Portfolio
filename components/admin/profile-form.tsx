@@ -87,10 +87,11 @@ export function ProfileForm({
         hint="Square photos work best."
       />
       <FileUpload
-        label="Résumé PDF"
+        label="Résumé PDF (optional upload)"
         kind="pdf"
         value={form.watch("resumeUrl")}
         onChange={(url) => form.setValue("resumeUrl", url, { shouldDirty: true })}
+        hint="The public Download Résumé button always uses a PDF generated from this content at /resume.pdf."
       />
       <button type="submit" className="btn btn-primary" disabled={form.formState.isSubmitting}>
         {form.formState.isSubmitting ? "Saving…" : "Save profile"}

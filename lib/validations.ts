@@ -131,6 +131,17 @@ export const reorderSchema = z.object({
   ids: z.array(z.string().min(1)).min(1),
 });
 
+export const contactSchema = z.object({
+  name: z.string().trim().min(2, "Name is required").max(80),
+  email: z.string().trim().email("Enter a valid email").max(160),
+  subject: optionalText,
+  body: z
+    .string()
+    .trim()
+    .min(10, "Message must be at least 10 characters")
+    .max(4000, "Message is too long"),
+});
+
 export type ProfileInput = z.infer<typeof profileSchema>;
 export type SkillGroupInput = z.infer<typeof skillGroupSchema>;
 export type SkillInput = z.infer<typeof skillSchema>;
@@ -139,3 +150,4 @@ export type ProjectInput = z.infer<typeof projectSchema>;
 export type CertificationInput = z.infer<typeof certificationSchema>;
 export type EducationInput = z.infer<typeof educationSchema>;
 export type PostInput = z.infer<typeof postSchema>;
+export type ContactInput = z.infer<typeof contactSchema>;

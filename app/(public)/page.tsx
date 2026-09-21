@@ -5,6 +5,7 @@ import { Projects } from "@/components/public/projects";
 import { Skills } from "@/components/public/skills";
 import { Summary } from "@/components/public/summary";
 import { getPortfolio } from "@/lib/data";
+import { latestDate } from "@/lib/format";
 
 // Time-based ISR fallback. On-demand revalidation happens from admin saves.
 export const revalidate = 60;
@@ -30,16 +31,31 @@ export default async function HomePage() {
     );
   }
 
+  const skillsUpdatedAt = latestDate([
+    ...skillGroups.map((group) => group.updatedAt),
+    ...skillGroups.flatMap((group) => group.skills.map((skill) => skill.updatedAt)),
+  ]);
+
   return (
     <main>
       <Hero profile={profile} />
-      <Summary summary={profile.summary} />
-      <Skills groups={skillGroups} />
-      <ExperienceTimeline experiences={experiences} />
-      <Projects projects={projects} />
+      <Summary summary={profile.summary} updatedAt={profile.updatedAt} />
+      <Skills groups={skillGroups} updatedAt={skillsUpdatedAt} />
+      <ExperienceTimeline
+        experiences={experiences}
+        updatedAt={latestDate(experiences.map((item) => item.updatedAt))}
+      />
+      <Projects
+        projects={projects}
+        updatedAt={latestDate(projects.map((item) => item.updatedAt))}
+      />
       <EducationAndCertifications
         education={education}
         certifications={certifications}
+        updatedAt={latestDate([
+          ...education.map((item) => item.updatedAt),
+          ...certifications.map((item) => item.updatedAt),
+        ])}
       />
     </main>
   );

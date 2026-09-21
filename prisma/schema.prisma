@@ -99,6 +99,19 @@ model Post {
   updatedAt   DateTime  @updatedAt
 }
 
+model Message {
+  id        String    @id @default(cuid())
+  name      String
+  email     String
+  subject   String?
+  body      String    @db.Text
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([createdAt])
+  @@index([readAt])
+}
+
 model AdminUser {
   id            String    @id @default(cuid())
   name          String
