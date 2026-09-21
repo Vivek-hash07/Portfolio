@@ -37,7 +37,9 @@ export async function createPost(input: PostInput): Promise<ActionResult> {
     throw error;
   }
 
-  revalidatePublic();
+  revalidatePublic(
+    parsed.data.published ? [`/blog/${parsed.data.slug}`] : [],
+  );
   return actionOk();
 }
 

@@ -1,5 +1,3 @@
-import { cache } from "react";
-import { prisma } from "@/lib/prisma";
 import type {
   Certification,
   Education,
@@ -10,6 +8,8 @@ import type {
   Skill,
   SkillGroup,
 } from "@/app/generated/prisma/client";
+import { cachedPublicQuery } from "@/lib/cache";
+import { prisma } from "@/lib/prisma";
 
 export type SkillGroupWithSkills = SkillGroup & { skills: Skill[] };
 
@@ -22,14 +22,14 @@ export type PortfolioData = {
   education: Education[];
 };
 
-export const getProfile = cache(async (): Promise<Profile | null> => {
+export const getProfile = cachedPublicQuery(async (): Promise<Profile | null> => {
   return prisma.profile.findFirst();
-});
+}, "public-profile");
 
-export const getPortfolio = cache(async (): Promise<PortfolioData> => {
+export const getPortfolio = cachedPublicQuery(async (): Promise<PortfolioData> => {
   const [profile, skillGroups, experiences, projects, certifications, education] =
     await Promise.all([
-      getProfile(),
+      prisma.profile.findFirst(),
       prisma.skillGroup.findMany({
         orderBy: { order: "asc" },
         include: { skills: { orderBy: { order: "asc" } } },
@@ -48,26 +48,30 @@ export const getPortfolio = cache(async (): Promise<PortfolioData> => {
     certifications,
     education,
   };
-});
+}, "public-portfolio");
 
-export const getPublishedPosts = cache(async (): Promise<Post[]> => {
+export const getPublishedPosts = cachedPublicQuery(async (): Promise<Post[]> => {
   return prisma.post.findMany({
     where: { published: true },
     orderBy: [{ publishedAt: "desc" }, { updatedAt: "desc" }],
   });
-});
+}, "public-posts");
 
-export const getPublishedPostBySlug = cache(
+export const getPublishedPostBySlug = cachedPublicQuery(
   async (slug: string): Promise<Post | null> => {
     return prisma.post.findFirst({
       where: { slug, published: true },
     });
   },
+  "public-post-by-slug",
 );
 
-export const getPublishedPostSlugs = cache(async (): Promise<{ slug: string }[]> => {
-  return prisma.post.findMany({
-    where: { published: true },
-    select: { slug: true },
-  });
-});
+export const getPublishedPostSlugs = cachedPublicQuery(
+  async (): Promise<{ slug: string }[]> => {
+    return prisma.post.findMany({
+      where: { published: true },
+      select: { slug: true },
+    });
+  },
+  "public-post-slugs",
+);

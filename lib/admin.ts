@@ -1,6 +1,7 @@
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import type { ZodError } from "zod";
 import { requireAdminSession } from "@/lib/admin-session";
+import { PUBLIC_CACHE_TAG } from "@/lib/cache";
 
 export type ActionOk = { ok: true };
 export type ActionFail = {
@@ -47,11 +48,15 @@ export function failFromZod(error: ZodError): ActionFail {
 }
 
 export function revalidatePublic(extraPaths: string[] = []) {
-  const paths = new Set(["/", "/blog", ...extraPaths]);
+  updateTag(PUBLIC_CACHE_TAG);
 
-  for (const path of paths) {
+  // Root layout invalidation covers nav/footer plus every nested public page.
+  revalidatePath("/", "layout");
+  revalidatePath("/");
+  revalidatePath("/blog");
+  revalidatePath("/blog/[slug]", "page");
+
+  for (const path of extraPaths) {
     revalidatePath(path);
   }
-
-  revalidatePath("/blog/[slug]", "page");
 }

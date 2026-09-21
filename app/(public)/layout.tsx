@@ -4,6 +4,7 @@ import { SiteFooter } from "@/components/public/site-footer";
 import { SiteNav } from "@/components/public/site-nav";
 import { getProfile } from "@/lib/data";
 
+// ISR with a 60s safety net. Admin mutations call revalidatePublic() immediately.
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {

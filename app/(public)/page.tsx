@@ -6,6 +6,7 @@ import { Skills } from "@/components/public/skills";
 import { Summary } from "@/components/public/summary";
 import { getPortfolio } from "@/lib/data";
 
+// Time-based ISR fallback. On-demand revalidation happens from admin saves.
 export const revalidate = 60;
 
 export default async function HomePage() {
