@@ -1,4 +1,6 @@
 import "dotenv/config";
+import { randomUUID } from "node:crypto";
+import { hashPassword } from "../lib/password";
 import prisma from "../lib/prisma";
 
 function utcDate(year: number, month: number, day = 1) {
@@ -319,6 +321,8 @@ If you can read this on the live site, unpublished-post filtering is broken.`,
     ],
   });
 
+  await seedAdmin();
+
   const counts = {
     profile: await prisma.profile.count(),
     skillGroups: await prisma.skillGroup.count(),
@@ -329,12 +333,67 @@ If you can read this on the live site, unpublished-post filtering is broken.`,
     education: await prisma.education.count(),
     posts: await prisma.post.count(),
     publishedPosts: await prisma.post.count({ where: { published: true } }),
+    adminUsers: await prisma.adminUser.count(),
   };
 
   console.log("Seed complete:");
   for (const [label, count] of Object.entries(counts)) {
     console.log(`  - ${label}: ${count}`);
   }
+}
+
+async function seedAdmin() {
+  const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const password = process.env.ADMIN_PASSWORD;
+
+  if (!email || !password) {
+    throw new Error(
+      "ADMIN_EMAIL and ADMIN_PASSWORD must be set to seed the admin user",
+    );
+  }
+
+  if (password.length < 8) {
+    throw new Error("ADMIN_PASSWORD must be at least 8 characters");
+  }
+
+  const passwordHash = await hashPassword(password);
+
+  await prisma.adminUser.deleteMany({
+    where: { email: { not: email } },
+  });
+
+  const user = await prisma.adminUser.upsert({
+    where: { email },
+    update: {
+      name: "Vivek Sarvaiya",
+      passwordHash,
+      emailVerified: true,
+    },
+    create: {
+      name: "Vivek Sarvaiya",
+      email,
+      emailVerified: true,
+      passwordHash,
+    },
+  });
+
+  await prisma.account.deleteMany({
+    where: { userId: user.id, providerId: "credential" },
+  });
+
+  await prisma.account.create({
+    data: {
+      id: randomUUID(),
+      accountId: user.id,
+      providerId: "credential",
+      userId: user.id,
+      password: passwordHash,
+    },
+  });
+
+  await prisma.session.deleteMany({
+    where: { userId: user.id },
+  });
 }
 
 seed()
