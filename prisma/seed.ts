@@ -280,6 +280,45 @@ async function seed() {
     },
   });
 
+  await prisma.post.createMany({
+    data: [
+      {
+        title: "Orchestrating 5–10 data sources without drowning in glue code",
+        slug: "api-orchestration-deal-intelligence",
+        excerpt:
+          "Notes from building an API orchestration layer that cut manual M&A research effort by 30–50%.",
+        published: true,
+        publishedAt: utcDate(2026, 9, 1),
+        content: `Most "AI features" fail in production for a boring reason: the model is the easy part. The hard part is getting trustworthy, timely context in front of it.
+
+At Quralyst I spent a lot of time on that unglamorous layer — ingesting, normalizing, and enriching deal data across 5–10 external sources.
+
+## What actually mattered
+
+- Treat every vendor as an unreliable dependency. Timeouts, schema drift, and partial payloads are the default.
+- Separate **ingestion**, **normalization**, and **enrichment**. Mixing them makes retries dangerous.
+- Keep enrichment idempotent. If OpenAI or Apollo is retried, the same company should not get duplicated records.
+- Prefer a small orchestration layer over a maze of one-off scripts. The scripts always win the first week and lose the third month.
+
+## A useful default
+
+If a pipeline can stall, it will stall in production. Durable jobs, clear retry boundaries, and boring observability beat a clever prompt every time.
+
+That same lesson showed up later in KVM AI CodeReviewer, where Inngest jobs and vector context had to survive webhook retries without double-posting reviews.`,
+      },
+      {
+        title: "Draft: evaluating RAG without fooling yourself",
+        slug: "unpublished-draft",
+        excerpt: "Internal notes on retrieval evals. Not ready to publish.",
+        published: false,
+        publishedAt: null,
+        content: `This draft should never appear on the public blog.
+
+If you can read this on the live site, unpublished-post filtering is broken.`,
+      },
+    ],
+  });
+
   const counts = {
     profile: await prisma.profile.count(),
     skillGroups: await prisma.skillGroup.count(),
@@ -288,6 +327,8 @@ async function seed() {
     projects: await prisma.project.count(),
     certifications: await prisma.certification.count(),
     education: await prisma.education.count(),
+    posts: await prisma.post.count(),
+    publishedPosts: await prisma.post.count({ where: { published: true } }),
   };
 
   console.log("Seed complete:");

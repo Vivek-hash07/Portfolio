@@ -10,13 +10,14 @@ if (!connectionString) {
 const adapter = new PrismaPg({ connectionString });
 
 const globalForPrisma = globalThis as unknown as {
-  prisma?: PrismaClient;
+  __portfolioPrisma?: PrismaClient;
 };
 
-const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter });
+export const prisma =
+  globalForPrisma.__portfolioPrisma ?? new PrismaClient({ adapter });
 
 if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
+  globalForPrisma.__portfolioPrisma = prisma;
 }
 
 export default prisma;

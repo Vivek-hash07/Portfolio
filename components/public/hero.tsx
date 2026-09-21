@@ -1,0 +1,45 @@
+import type { Profile } from "@/app/generated/prisma/client";
+import { Container } from "@/components/public/ui";
+
+export function Hero({ profile }: { profile: Profile }) {
+  const firstSentence = profile.summary.split(/(?<=\.)\s/)[0] ?? profile.summary;
+
+  return (
+    <section
+      id="top"
+      data-pipeline-node="Start"
+      className="scroll-mt-24 border-b border-border py-[var(--section-y)]"
+    >
+      <Container>
+        <div className="hero-entrance max-w-3xl">
+          <p className="font-mono text-[0.7rem] tracking-[0.22em] text-accent uppercase">
+            ● Live pipeline · {profile.location}
+          </p>
+          <h1 className="font-display mt-5 text-4xl font-semibold tracking-tight text-fg sm:text-6xl">
+            {profile.name}
+          </h1>
+          <p className="mt-4 max-w-2xl font-mono text-sm leading-7 text-muted sm:text-base">
+            {profile.title}
+          </p>
+          <p className="mt-6 max-w-2xl text-base leading-7 text-fg/80 sm:text-lg">
+            {firstSentence}
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a href="#projects" className="btn btn-primary">
+              View Projects
+            </a>
+            <a href="#contact" className="btn btn-ghost">
+              Contact
+            </a>
+            {profile.resumeUrl ? (
+              <a href={profile.resumeUrl} className="btn btn-ghost">
+                Download Résumé
+              </a>
+            ) : null}
+          </div>
+        </div>
+        <div className="hero-rule" aria-hidden="true" />
+      </Container>
+    </section>
+  );
+}
