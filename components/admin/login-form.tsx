@@ -1,17 +1,44 @@
 "use client";
 
-import { useActionState } from "react";
-import { loginAction, type LoginState } from "@/app/admin/actions";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 
-const initialState: LoginState = { error: null };
+const LOGIN_ERROR_MESSAGE = "Invalid email or password";
 
 export function LoginForm({ from }: { from: string }) {
-  const [state, formAction, pending] = useActionState(loginAction, initialState);
+  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
+
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    setPending(true);
+
+    const form = new FormData(event.currentTarget);
+    const email = String(form.get("email") ?? "")
+      .trim()
+      .toLowerCase();
+    const password = String(form.get("password") ?? "");
+
+    const result = await authClient.signIn.email({
+      email,
+      password,
+    });
+
+    if (result.error) {
+      setPending(false);
+      setError(LOGIN_ERROR_MESSAGE);
+      return;
+    }
+
+    router.push(from);
+    router.refresh();
+  }
 
   return (
-    <form action={formAction} className="mt-8 space-y-5">
-      <input type="hidden" name="from" value={from} />
-
+    <form onSubmit={onSubmit} className="mt-8 space-y-5">
       <div className="space-y-2">
         <label htmlFor="email" className="text-sm font-medium text-fg">
           Email
@@ -41,17 +68,13 @@ export function LoginForm({ from }: { from: string }) {
         />
       </div>
 
-      {state.error ? (
+      {error ? (
         <p className="text-sm text-red-600 dark:text-red-400" role="alert">
-          {state.error}
+          {error}
         </p>
       ) : null}
 
-      <button
-        type="submit"
-        className="btn btn-primary w-full"
-        disabled={pending}
-      >
+      <button type="submit" className="btn btn-primary w-full" disabled={pending}>
         {pending ? "Signing in…" : "Sign in"}
       </button>
     </form>

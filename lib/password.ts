@@ -1,11 +1,12 @@
-import { compare, hash } from "bcryptjs";
-
-const BCRYPT_ROUNDS = 12;
+import {
+  hashPassword as hashWithBetterAuth,
+  verifyPassword as verifyWithBetterAuth,
+} from "better-auth/crypto";
 
 export async function hashPassword(password: string) {
-  return hash(password, BCRYPT_ROUNDS);
+  return hashWithBetterAuth(password);
 }
 
 export async function verifyPassword(password: string, passwordHash: string) {
-  return compare(password, passwordHash);
+  return verifyWithBetterAuth({ hash: passwordHash, password });
 }

@@ -11,10 +11,32 @@ if (!authSecret && process.env.NODE_ENV === "production") {
   throw new Error("BETTER_AUTH_SECRET is not set");
 }
 
+function localAuthOrigins() {
+  const origins = new Set<string>([
+    authUrl,
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+  ]);
+
+  return [...origins];
+}
+
 export const auth = betterAuth({
   secret: authSecret,
   baseURL: authUrl,
-  trustedOrigins: [authUrl],
+  trustedOrigins: async (request) => {
+    const origins = localAuthOrigins();
+
+    if (process.env.NODE_ENV !== "production") {
+      const origin = request?.headers.get("origin");
+
+      if (origin) {
+        origins.push(origin);
+      }
+    }
+
+    return origins;
+  },
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
@@ -58,7 +80,7 @@ export const auth = betterAuth({
     },
   },
   logger: {
-    level: "error",
+    level: process.env.NODE_ENV === "production" ? "error" : "warn",
   },
   advanced: {
     defaultCookieAttributes: {
