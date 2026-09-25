@@ -32,7 +32,7 @@ export function ExperienceTimeline({
             {experiences.map((role) => (
               <li
                 key={role.id}
-                className="relative rounded-2xl border border-border bg-surface/70 p-6 sm:p-7"
+                className="card-lift relative rounded-2xl border border-border bg-surface/70 p-6 sm:p-7"
               >
                 <p className="font-mono text-xs tracking-wide text-accent">
                   {formatDateRange(role.startDate, role.endDate)}

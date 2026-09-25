@@ -1,44 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
-
-const LOGIN_ERROR_MESSAGE = "Invalid email or password";
+import { useActionState } from "react";
+import { loginAction, type LoginState } from "@/app/admin/actions";
 
 export function LoginForm({ from }: { from: string }) {
-  const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
-  const [pending, setPending] = useState(false);
-
-  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError(null);
-    setPending(true);
-
-    const form = new FormData(event.currentTarget);
-    const email = String(form.get("email") ?? "")
-      .trim()
-      .toLowerCase();
-    const password = String(form.get("password") ?? "");
-
-    const result = await authClient.signIn.email({
-      email,
-      password,
-    });
-
-    if (result.error) {
-      setPending(false);
-      setError(LOGIN_ERROR_MESSAGE);
-      return;
-    }
-
-    router.push(from);
-    router.refresh();
-  }
+  const [state, formAction, pending] = useActionState<LoginState, FormData>(
+    loginAction,
+    null,
+  );
 
   return (
-    <form onSubmit={onSubmit} className="mt-8 space-y-5">
+    <form action={formAction} className="mt-8 space-y-5">
+      <input type="hidden" name="from" value={from} />
+
       <div className="space-y-2">
         <label htmlFor="email" className="text-sm font-medium text-fg">
           Email
@@ -68,9 +42,9 @@ export function LoginForm({ from }: { from: string }) {
         />
       </div>
 
-      {error ? (
+      {state?.error ? (
         <p className="text-sm text-red-600 dark:text-red-400" role="alert">
-          {error}
+          {state.error}
         </p>
       ) : null}
 

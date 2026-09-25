@@ -132,7 +132,12 @@ body::before {
     background-color 160ms ease,
     color 160ms ease,
     border-color 160ms ease,
-    box-shadow 160ms ease;
+    box-shadow 160ms ease,
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
 }
 
 .btn-primary {
@@ -186,7 +191,7 @@ html.dark .btn-danger:hover {
 }
 
 .hero-entrance > * {
-  animation: rise-in 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: rise-in 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .hero-entrance > *:nth-child(1) {
@@ -234,6 +239,135 @@ html.dark .btn-danger:hover {
     transform: scaleX(1);
     opacity: 1;
   }
+}
+
+.hero-orb {
+  position: absolute;
+  z-index: 0;
+  border-radius: 999px;
+  filter: blur(28px);
+  pointer-events: none;
+  background: color-mix(in srgb, var(--accent) 45%, transparent);
+  animation: float-orb 9s ease-in-out infinite;
+}
+
+.hero-orb-a {
+  top: -2.5rem;
+  right: 8%;
+  height: 11rem;
+  width: 11rem;
+  opacity: 0.55;
+}
+
+.hero-orb-b {
+  bottom: 1rem;
+  left: -2rem;
+  height: 8rem;
+  width: 8rem;
+  opacity: 0.35;
+  animation-delay: -3.5s;
+  animation-duration: 11s;
+}
+
+@keyframes float-orb {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(18px, -22px, 0) scale(1.08);
+  }
+}
+
+.live-dot {
+  display: inline-block;
+  height: 0.45rem;
+  width: 0.45rem;
+  margin-right: 0.45rem;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 0 0 var(--glow);
+  animation: live-pulse 1.8s ease-out infinite;
+  vertical-align: 0.05em;
+}
+
+@keyframes live-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 8px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.nav-link {
+  position: relative;
+  transition: color 180ms ease;
+}
+
+.nav-link:hover {
+  color: var(--fg);
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.3rem;
+  height: 1px;
+  width: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+.reveal.is-visible .skill-chip {
+  animation: chip-in 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.skill-chip {
+  transition:
+    transform 200ms ease,
+    border-color 200ms ease,
+    background-color 200ms ease;
+}
+
+.skill-chip:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+}
+
+@keyframes chip-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.card-lift {
+  transition:
+    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 240ms ease,
+    box-shadow 240ms ease;
+}
+
+.card-lift:hover {
+  transform: translateY(-6px);
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  box-shadow: 0 18px 40px -24px var(--glow);
 }
 
 .reveal {
@@ -391,7 +525,10 @@ html.dark .btn-danger:hover {
 @media (prefers-reduced-motion: reduce) {
   .hero-entrance > *,
   .hero-rule,
-  .pipeline-head::after {
+  .hero-orb,
+  .live-dot,
+  .pipeline-head::after,
+  .reveal.is-visible .skill-chip {
     animation: none;
   }
 
@@ -403,7 +540,11 @@ html.dark .btn-danger:hover {
 
   .project-card,
   .project-card:hover,
-  .project-card:focus-within {
+  .project-card:focus-within,
+  .card-lift,
+  .card-lift:hover,
+  .btn:hover,
+  .skill-chip:hover {
     transform: none;
   }
 

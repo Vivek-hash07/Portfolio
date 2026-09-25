@@ -11,8 +11,10 @@ export function Hero({ profile }: { profile: Profile }) {
       data-pipeline-node="Start"
       className="scroll-mt-24 border-b border-border py-[var(--section-y)]"
     >
-      <Container>
-        <div className="hero-entrance max-w-3xl">
+      <Container className="relative">
+        <div className="hero-orb hero-orb-a" aria-hidden="true" />
+        <div className="hero-orb hero-orb-b" aria-hidden="true" />
+        <div className="hero-entrance relative max-w-3xl">
           {profile.avatarUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -22,7 +24,7 @@ export function Hero({ profile }: { profile: Profile }) {
             />
           ) : null}
           <p className="font-mono text-[0.7rem] tracking-[0.22em] text-accent uppercase">
-            ● Live pipeline · {profile.location}
+            <span className="live-dot" aria-hidden="true" /> Live pipeline · {profile.location}
           </p>
           <h1 className="font-display mt-5 text-4xl font-semibold tracking-tight text-fg sm:text-6xl">
             {profile.name}

@@ -34,10 +34,11 @@ export function Skills({
                   {group.label}
                 </h3>
                 <ul className="mt-4 flex flex-wrap gap-2">
-                  {group.skills.map((skill) => (
+                  {group.skills.map((skill, index) => (
                     <li
                       key={skill.id}
-                      className="rounded-full border border-border bg-surface px-3 py-1 font-mono text-xs text-fg/90"
+                      className="skill-chip rounded-full border border-border bg-surface px-3 py-1 font-mono text-xs text-fg/90"
+                      style={{ animationDelay: `${index * 45}ms` }}
                     >
                       {skill.name}
                     </li>

@@ -44,7 +44,7 @@ export function SiteNav({ name }: { name: string }) {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm text-muted transition-colors hover:text-fg"
+              className="nav-link text-sm text-muted"
             >
               {link.label}
             </Link>

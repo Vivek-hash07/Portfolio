@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSessionCookie } from "better-auth/cookies";
 
 const LOGIN_PATH = "/admin/login";
+const SESSION_COOKIE = "admin_session";
 
 function safeAdminPath(pathname: string) {
   if (pathname === "/admin" || pathname === LOGIN_PATH) {
@@ -22,7 +22,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const sessionCookie = getSessionCookie(request);
+  const sessionCookie = request.cookies.get(SESSION_COOKIE)?.value;
 
   if (!sessionCookie) {
     const loginUrl = new URL(LOGIN_PATH, request.url);
