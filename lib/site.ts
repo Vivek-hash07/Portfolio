@@ -1,5 +1,5 @@
 export function getSiteUrl() {
-  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  const configured = process.env.SITE_URL?.trim();
   const raw =
     configured ||
     (process.env.VERCEL_PROJECT_PRODUCTION_URL
