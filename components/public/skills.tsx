@@ -27,24 +27,25 @@ export function Skills({
             title="Skills"
             updatedAt={updatedAt}
           />
-          <div className="grid gap-10 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             {groups.map((group) => (
-              <div key={group.id}>
-                <h3 className="font-mono text-[0.7rem] font-semibold tracking-[0.18em] text-muted uppercase">
-                  {group.label}
-                </h3>
-                <ul className="mt-4 flex flex-wrap gap-2">
-                  {group.skills.map((skill, index) => (
-                    <li
-                      key={skill.id}
-                      className="skill-chip rounded-full border border-border bg-surface px-3 py-1 font-mono text-xs text-fg/90"
-                      style={{ animationDelay: `${index * 45}ms` }}
-                    >
+              <article key={group.id} className="skill-panel rounded-2xl p-6">
+                <div className="flex items-baseline justify-between gap-4">
+                  <h3 className="font-display text-lg font-semibold tracking-tight text-fg">
+                    {group.label}
+                  </h3>
+                  <span className="font-mono text-[0.65rem] tracking-[0.16em] text-muted uppercase">
+                    {String(group.skills.length).padStart(2, "0")} items
+                  </span>
+                </div>
+                <ul className="mt-5 grid gap-2">
+                  {group.skills.map((skill) => (
+                    <li key={skill.id} className="skill-row">
                       {skill.name}
                     </li>
                   ))}
                 </ul>
-              </div>
+              </article>
             ))}
           </div>
         </Reveal>

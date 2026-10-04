@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 const IMAGE_TYPES = new Set([
   "image/jpeg",
@@ -76,6 +76,17 @@ function hasS3Config() {
   );
 }
 
+function s3Client() {
+  return new S3Client({
+    region: process.env.S3_REGION!,
+    credentials: {
+      accessKeyId: process.env.S3_ACCESS_KEY_ID!,
+      secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
+    },
+    endpoint: process.env.S3_ENDPOINT || undefined,
+  });
+}
+
 function hasCloudinaryConfig() {
   return Boolean(
     process.env.CLOUDINARY_CLOUD_NAME &&
@@ -88,14 +99,7 @@ async function uploadToS3(file: File, buffer: Buffer) {
   const bucket = process.env.S3_BUCKET!;
   const region = process.env.S3_REGION!;
   const key = objectKey(file);
-  const client = new S3Client({
-    region,
-    credentials: {
-      accessKeyId: process.env.S3_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
-    },
-    endpoint: process.env.S3_ENDPOINT || undefined,
-  });
+  const client = s3Client();
 
   await client.send(
     new PutObjectCommand({
@@ -170,4 +174,30 @@ export function storageBackend() {
   if (hasS3Config()) return "s3";
   if (hasCloudinaryConfig()) return "cloudinary";
   return "local";
+}
+
+export async function getS3Object(key: string) {
+  if (!hasS3Config()) {
+    return null;
+  }
+
+  try {
+    const response = await s3Client().send(
+      new GetObjectCommand({
+        Bucket: process.env.S3_BUCKET!,
+        Key: key,
+      }),
+    );
+
+    if (!response.Body) {
+      return null;
+    }
+
+    return {
+      bytes: Buffer.from(await response.Body.transformToByteArray()),
+      contentType: response.ContentType ?? "application/pdf",
+    };
+  } catch {
+    return null;
+  }
 }

@@ -91,7 +91,7 @@ export function ProfileForm({
         kind="pdf"
         value={form.watch("resumeUrl")}
         onChange={(url) => form.setValue("resumeUrl", url, { shouldDirty: true })}
-        hint="The public Download Résumé button always uses a PDF generated from this content at /resume.pdf."
+        hint="Used by the public Download Resume button. If empty, the site looks for portfolio/Vivek Sarvaiya.pdf in S3."
       />
       <button type="submit" className="btn btn-primary" disabled={form.formState.isSubmitting}>
         {form.formState.isSubmitting ? "Saving…" : "Save profile"}
